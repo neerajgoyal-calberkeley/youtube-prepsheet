@@ -1,0 +1,20 @@
+# Local config with real credentials (copy firebase-config.example.js → firebase-config.js)
+firebase-config.js
+
+# Dependencies
+stripe-webhook/node_modules/
+stripe-webhook/package-lock.json
+
+# Build artifacts & generated files
+*.zip
+icons.pdf
+create_icons.py
+*.pdf
+*.docx
+
+# Claude Code session data
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

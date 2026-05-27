@@ -1,0 +1,651 @@
+/* ══════════════════════════════════════════════════════════
+   YouTube Cheatsheet Extension — Injected Styles
+   Brand: Orange #BF5700 — inspired by PrepSheet's clean style
+   All classes prefixed yt-cs- to avoid YouTube conflicts
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Floating Button ─────────────────────────────────────── */
+
+#yt-cs-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 61;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px 0 10px;
+  height: 36px;
+  background: #BF5700;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  cursor: pointer;
+  font-family: 'YouTube Sans', 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 12px rgba(191, 87, 0, 0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.15s ease, box-shadow 0.15s;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+#yt-cs-btn.yt-cs-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#yt-cs-btn:hover {
+  background: #A24A00;
+  box-shadow: 0 4px 16px rgba(191, 87, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+#yt-cs-btn:active { transform: translateY(0); }
+
+/* Brand icon inside the button */
+.yt-cs-btn-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-cs-btn-icon svg { width: 18px; height: 18px; }
+
+/* ── Slide-in Panel ─────────────────────────────────────── */
+
+#yt-cs-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 440px;
+  max-width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  background: #FFFFFF;
+  box-shadow: -2px 0 32px rgba(0, 0, 0, 0.14);
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+#yt-cs-panel.yt-cs-open {
+  transform: translateX(0);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.yt-cs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 56px;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.yt-cs-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.yt-cs-brand-icon {
+  width: 32px;
+  height: 32px;
+  background: #BF5700;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.yt-cs-brand-icon svg { width: 18px; height: 18px; color: white; }
+
+.yt-cs-brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: -0.01em;
+}
+
+.yt-cs-header-right { display: flex; align-items: center; gap: 6px; }
+
+.yt-cs-close-btn {
+  background: #F5F5F5;
+  border: none;
+  color: #555;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.yt-cs-close-btn:hover { background: #EBEBEB; color: #1A1A1A; }
+.yt-cs-close-btn svg { width: 16px; height: 16px; }
+
+/* ── Tabs ────────────────────────────────────────────────── */
+
+.yt-cs-tabs {
+  display: flex;
+  padding: 0 16px;
+  gap: 4px;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
+  background: #FAFAFA;
+}
+
+.yt-cs-tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: -1px;
+  letter-spacing: 0.01em;
+}
+
+.yt-cs-tab svg { width: 15px; height: 15px; }
+
+.yt-cs-tab:hover { color: #BF5700; }
+
+.yt-cs-tab.active {
+  color: #BF5700;
+  border-bottom-color: #BF5700;
+}
+
+/* ── Scrollable Body ─────────────────────────────────────── */
+
+.yt-cs-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 12px;
+  scroll-behavior: smooth;
+}
+
+.yt-cs-body::-webkit-scrollbar { width: 4px; }
+.yt-cs-body::-webkit-scrollbar-track { background: transparent; }
+.yt-cs-body::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 4px; }
+.yt-cs-body::-webkit-scrollbar-thumb:hover { background: #BDBDBD; }
+
+/* ── Loading State ──────────────────────────────────────── */
+
+.yt-cs-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+}
+
+.yt-cs-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #F0F0F0;
+  border-top-color: #BF5700;
+  border-radius: 50%;
+  animation: yt-cs-spin 0.75s linear infinite;
+}
+
+@keyframes yt-cs-spin { to { transform: rotate(360deg); } }
+
+.yt-cs-loading-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.yt-cs-loading-sub {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+}
+
+/* ── Empty State ────────────────────────────────────────── */
+
+.yt-cs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  gap: 12px;
+  text-align: center;
+  padding: 32px 24px;
+  color: #888;
+}
+
+.yt-cs-empty-icon {
+  width: 56px;
+  height: 56px;
+  background: #FFF5EC;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.yt-cs-empty-icon svg { width: 28px; height: 28px; color: #BF5700; }
+
+.yt-cs-empty h3 { font-size: 15px; font-weight: 600; color: #1A1A1A; margin: 0; }
+.yt-cs-empty p  { font-size: 13px; color: #999; margin: 0; line-height: 1.5; }
+
+/* ── Error State ────────────────────────────────────────── */
+
+.yt-cs-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 12px;
+  text-align: center;
+  padding: 24px;
+}
+
+.yt-cs-error-icon {
+  width: 48px;
+  height: 48px;
+  background: #FFF5F5;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yt-cs-error-icon svg { width: 24px; height: 24px; color: #EF4444; }
+
+.yt-cs-error h3 { font-size: 14px; font-weight: 600; color: #1A1A1A; margin: 0; }
+
+.yt-cs-error p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 300px;
+}
+
+.yt-cs-error-link {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 9px 22px;
+  background: #BF5700;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.yt-cs-error-link:hover { background: #A24A00; }
+
+/* ── History List ────────────────────────────────────────── */
+
+.yt-cs-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.yt-cs-history-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #F0F0F0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.12s, box-shadow 0.15s;
+  background: #FFFFFF;
+}
+
+.yt-cs-history-card:hover {
+  border-color: #FFD4B8;
+  background: #FFFAF8;
+  box-shadow: 0 2px 8px rgba(191, 87, 0, 0.1);
+}
+
+.yt-cs-hist-thumb {
+  width: 80px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #F5F5F5;
+}
+
+.yt-cs-hist-placeholder {
+  width: 80px;
+  height: 50px;
+  border-radius: 6px;
+  background: #FFF5EC;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #BF5700;
+}
+
+.yt-cs-hist-placeholder svg { width: 22px; height: 22px; }
+
+.yt-cs-hist-info { flex: 1; min-width: 0; }
+
+.yt-cs-hist-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1A1A1A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.yt-cs-hist-channel {
+  font-size: 11.5px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.yt-cs-hist-date {
+  font-size: 11px;
+  color: #BBB;
+}
+
+.yt-cs-hist-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+.yt-cs-hist-btn {
+  background: none;
+  border: none;
+  color: #CCC;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.12s, background 0.12s;
+}
+
+.yt-cs-hist-btn:hover { color: #EF4444; background: #FFF5F5; }
+.yt-cs-hist-btn svg { width: 14px; height: 14px; }
+
+/* ── Cheatsheet Content ─────────────────────────────────── */
+/*
+  Claude's <style> blocks are stripped server-side before the HTML
+  reaches us. These rules therefore control all styling with !important
+  as a belt-and-suspenders guard against any lingering inline styles.
+*/
+
+.yt-cs-content {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #1A1A1A !important;
+}
+
+.yt-cs-content h1,
+.yt-cs-content h2,
+.yt-cs-content h3,
+.yt-cs-content h4,
+.yt-cs-content h5 {
+  color: #1A1A1A !important;
+  font-weight: 700 !important;
+  margin-top: 20px !important;
+  margin-bottom: 8px !important;
+}
+
+.yt-cs-content h2 {
+  font-size: 15.5px !important;
+  border-bottom: 2px solid #BF5700 !important;
+  padding-bottom: 6px !important;
+}
+
+.yt-cs-content h3 { font-size: 14px !important; }
+.yt-cs-content h4 { font-size: 13px !important; color: #555 !important; }
+
+.yt-cs-content p { margin-bottom: 10px !important; }
+
+.yt-cs-content ul,
+.yt-cs-content ol {
+  padding-left: 20px !important;
+  margin-bottom: 12px !important;
+}
+
+.yt-cs-content li { margin-bottom: 5px !important; }
+
+.yt-cs-content hr {
+  border: none !important;
+  border-top: 1px solid #F0F0F0 !important;
+  margin: 18px 0 !important;
+}
+
+.yt-cs-content code,
+.yt-cs-content pre {
+  font-family: 'Fira Code', 'Courier New', monospace !important;
+  font-size: 12.5px !important;
+  background: #FFF5EC !important;
+  border-radius: 4px !important;
+  padding: 1px 6px !important;
+  color: #A24A00 !important;
+}
+
+.yt-cs-content strong {
+  color: #A24A00 !important;
+  font-weight: 700 !important;
+}
+
+.yt-cs-content em { color: #555 !important; }
+
+/* Edit mode */
+.yt-cs-body[contenteditable="true"] {
+  outline: 2px solid #BF5700;
+  outline-offset: -3px;
+  border-radius: 2px;
+  cursor: text;
+}
+
+/* ── Action Bar ─────────────────────────────────────────── */
+
+.yt-cs-action-bar {
+  flex-shrink: 0;
+  border-top: 1px solid #F0F0F0;
+  background: #FFFFFF;
+  padding: 10px 14px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yt-cs-action-bar.yt-cs-bar-visible { display: flex; }
+
+.yt-cs-action-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #BBB;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.yt-cs-action-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.yt-cs-action-btn {
+  position: relative;
+  background: #FAFAFA;
+  border: 1px solid #EBEBEB;
+  border-radius: 10px;
+  flex: 1;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.yt-cs-action-btn:hover { transform: translateY(-1px); }
+.yt-cs-action-btn svg { width: 18px; height: 18px; }
+
+.yt-cs-action-btn[data-action="edit"]:hover    { background: #FFF5EC; color: #BF5700; border-color: #FFD4B8; }
+.yt-cs-action-btn[data-action="pdf"]:hover     { background: #FFF5F5; color: #EF4444; border-color: #FCA5A5; }
+.yt-cs-action-btn[data-action="word"]:hover    { background: #EFF6FF; color: #2563EB; border-color: #93C5FD; }
+.yt-cs-action-btn[data-action="email"]:hover   { background: #FFF7ED; color: #EA580C; border-color: #FDBA74; }
+.yt-cs-action-btn[data-action="whatsapp"]:hover{ background: #F0FDF4; color: #16A34A; border-color: #86EFAC; }
+.yt-cs-action-btn[data-action="discord"]:hover { background: #EEF2FF; color: #5865F2; border-color: #A5B4FC; }
+.yt-cs-action-btn[data-action="slack"]:hover   { background: #FDF4FF; color: #7C3AED; border-color: #D8B4FE; }
+.yt-cs-action-btn[data-action="sms"]:hover     { background: #F0F9FF; color: #0284C7; border-color: #7DD3FC; }
+
+/* Tooltip */
+.yt-cs-action-btn::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1A1A1A;
+  color: #FFF;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.yt-cs-action-btn:hover::before { opacity: 1; }
+
+/* Edit controls row */
+.yt-cs-edit-controls {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.yt-cs-save-btn {
+  flex: 1;
+  padding: 10px;
+  background: #BF5700;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.yt-cs-save-btn:hover { background: #A24A00; }
+
+.yt-cs-cancel-btn {
+  flex: 1;
+  padding: 10px;
+  background: #F5F5F5;
+  color: #555;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.yt-cs-cancel-btn:hover { background: #EBEBEB; }
+
+/* ── Toast ──────────────────────────────────────────────── */
+
+.yt-cs-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1A1A1A;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: system-ui, -apple-system, sans-serif;
+  z-index: 2147483647;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.22s, transform 0.22s;
+  pointer-events: none;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.yt-cs-toast.yt-cs-toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Debug error (diagnostic) ───────────────────────────── */
+
+.yt-cs-debug-error {
+  padding: 16px;
+}
+
+.yt-cs-debug-error p {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 10px;
+}
+
+.yt-cs-debug-error ol {
+  font-size: 11px;
+  font-family: monospace;
+  color: #555;
+  background: #F8F8F8;
+  padding: 12px 12px 12px 28px;
+  border-radius: 8px;
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  #yt-cs-panel { width: 100vw; }
+  #yt-cs-btn { top: 8px; right: 8px; }
+}

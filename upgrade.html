@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrade — YouTube Cheatsheet</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #F8F8F8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #1A1A1A;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 460px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #BF5700, #D46500);
+      padding: 32px 32px 28px;
+      text-align: center;
+      color: white;
+    }
+
+    .card-header .icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .card-header .icon svg { width: 28px; height: 28px; }
+
+    .card-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-header p {
+      font-size: 14px;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .card-body { padding: 28px 32px 32px; }
+
+    .limit-notice {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .limit-notice svg { width: 18px; height: 18px; color: #d97706; flex-shrink: 0; margin-top: 1px; }
+    .limit-notice p { font-size: 13px; color: #92400e; line-height: 1.4; }
+
+    .plan-card {
+      border: 2px solid #BF5700;
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #BF5700;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .plan-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .plan-price .amount {
+      font-size: 36px;
+      font-weight: 800;
+      color: #A24A00;
+    }
+
+    .plan-price .period {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #333;
+    }
+
+    .plan-features li svg {
+      width: 16px;
+      height: 16px;
+      color: #BF5700;
+      flex-shrink: 0;
+    }
+
+    .btn-subscribe {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #A24A00, #BF5700);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s;
+      margin-bottom: 16px;
+    }
+
+    .btn-subscribe:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    .signin-link {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .signin-link a {
+      color: #BF5700;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signin-link a:hover { text-decoration: underline; }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #999;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+
+    .back-link:hover { color: #BF5700; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <h1>Unlock Unlimited Cheatsheets</h1>
+      <p id="header-msg">Subscribe to keep learning without limits.</p>
+    </div>
+
+    <div class="card-body">
+      <div class="limit-notice">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p id="limit-msg">Subscribe below to generate unlimited AI study cheatsheets.</p>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-price">
+          <span class="amount">$10</span>
+          <span class="period">/ month</span>
+        </div>
+        <ul class="plan-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Unlimited cheatsheet generation
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Save, edit, and organize all cheatsheets
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Export to PDF, Word doc, email & more
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Share via WhatsApp, Discord, Slack, SMS
+          </li>
+        </ul>
+      </div>
+
+      <a class="btn-subscribe" id="btn-subscribe" href="#">
+        Subscribe Now — $10/month
+      </a>
+
+      <p class="signin-link">
+        Already subscribed?
+        <a href="#" id="btn-signin">Verify your payment</a>
+      </p>
+
+      <button class="back-link" id="btn-back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Go back to YouTube
+      </button>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script>
+    // Populate dynamic usage count
+    chrome.runtime.sendMessage({ action: 'getCheatsheets' }, (res) => {
+      const FREE_LIMIT = 3;
+      const count = (res?.cheatsheets || []).length;
+      const headerMsg = document.getElementById('header-msg');
+      const limitMsg  = document.getElementById('limit-msg');
+      if (count >= FREE_LIMIT) {
+        headerMsg.innerHTML = `You've used all ${FREE_LIMIT} free cheatsheets.<br>Subscribe to keep learning without limits.`;
+        limitMsg.textContent = `You've reached the free limit of ${FREE_LIMIT} cheatsheets. Subscribe to generate unlimited AI study cheatsheets.`;
+      } else {
+        headerMsg.innerHTML = `You've used ${count} of ${FREE_LIMIT} free cheatsheets.<br>Subscribe now for unlimited access.`;
+        limitMsg.textContent = `You've used ${count} of your ${FREE_LIMIT} free cheatsheets. Subscribe to never hit a limit.`;
+      }
+    });
+
+    document.getElementById('btn-subscribe').addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (typeof STRIPE_PAYMENT_LINK === 'undefined' || STRIPE_PAYMENT_LINK.includes('YOUR_PAYMENT_LINK')) {
+        alert('Stripe payment link not configured yet. Please fill in STRIPE_PAYMENT_LINK in firebase-config.js.');
+        return;
+      }
+      // Append Firebase UID so the webhook can map the payment to the user
+      let url = STRIPE_PAYMENT_LINK;
+      try {
+        const auth = await new Promise((r) => chrome.runtime.sendMessage({ action: 'getAuth' }, r));
+        if (auth?.userId) {
+          url += `?client_reference_id=${encodeURIComponent(auth.userId)}`;
+        }
+      } catch (_) {}
+      window.open(url);
+    });
+
+    document.getElementById('btn-signin').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = chrome.runtime.getURL('profile.html');
+    });
+
+    document.getElementById('btn-back').addEventListener('click', () => {
+      window.close();
+    });
+  </script>
+</body>
+</html>

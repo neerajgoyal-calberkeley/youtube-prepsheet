@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — YouTube Cheatsheet</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #F8F8F8;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 24px 60px;
+      color: #1A1A1A;
+    }
+
+    .container { max-width: 460px; width: 100%; }
+
+    /* Back link */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #888;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+      padding: 0;
+      margin-bottom: 20px;
+      transition: color 0.15s;
+    }
+    .back-btn:hover { color: #BF5700; }
+    .back-btn svg { width: 14px; height: 14px; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    /* Avatar section */
+    .profile-top {
+      background: linear-gradient(135deg, #BF5700, #D46500);
+      padding: 32px 28px 28px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,0.4);
+      overflow: hidden;
+    }
+
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .profile-info h2 { font-size: 18px; font-weight: 700; color: white; }
+    .profile-info p  { font-size: 13px; color: rgba(255,255,255,0.82); margin-top: 3px; }
+
+    /* Section */
+    .section { padding: 20px 24px; }
+    .section + .section { border-top: 1px solid #F0F0F0; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #AAA;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+
+    /* Subscription status */
+    .sub-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .sub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .sub-badge.free { background: #F5F5F5; color: #888; }
+    .sub-badge.pro  { background: #FFF5EC; color: #BF5700; }
+    .sub-badge svg  { width: 14px; height: 14px; }
+
+    .sub-details { font-size: 12.5px; color: #888; }
+
+    /* Usage bar */
+    .usage-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .usage-row .label { color: #555; }
+    .usage-row .count { font-weight: 700; color: #1A1A1A; }
+
+    .progress {
+      height: 6px;
+      background: #F0F0F0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #BF5700, #D46500);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      border: none;
+    }
+
+    .btn svg { width: 16px; height: 16px; }
+
+    .btn-orange { background: #BF5700; color: white; }
+    .btn-orange:hover { background: #A24A00; }
+
+    .btn-outline {
+      background: #F8F8F8;
+      color: #555;
+      border: 1px solid #E5E5E5;
+    }
+    .btn-outline:hover { background: #F0F0F0; }
+
+    .btn-danger {
+      background: #FFF5F5;
+      color: #EF4444;
+      border: 1px solid #FECACA;
+    }
+    .btn-danger:hover { background: #FEE2E2; }
+
+    .btn-stack { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Not signed in */
+    .not-signed-in {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .not-signed-in .icon {
+      width: 64px;
+      height: 64px;
+      background: #FFF5EC;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .not-signed-in .icon svg { width: 32px; height: 32px; color: #BF5700; }
+    .not-signed-in h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .not-signed-in p { font-size: 13px; color: #888; line-height: 1.5; margin-bottom: 20px; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: #1A1A1A;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.22s, transform 0.22s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" id="back-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back
+    </button>
+
+    <!-- Signed-in view -->
+    <div id="signed-in" style="display:none">
+      <div class="card">
+        <div class="profile-top">
+          <div class="avatar" id="avatar"></div>
+          <div class="profile-info">
+            <h2 id="display-name"></h2>
+            <p id="display-email"></p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Subscription</div>
+          <div class="sub-status">
+            <div>
+              <div class="sub-badge free" id="sub-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span id="sub-badge-text">Free Plan</span>
+              </div>
+              <p class="sub-details" id="sub-detail" style="margin-top:6px"></p>
+            </div>
+            <button class="btn btn-orange" id="btn-manage" style="width:auto;padding:8px 16px;font-size:12.5px;display:none">
+              Manage
+            </button>
+          </div>
+        </div>
+
+        <div class="section" id="usage-section">
+          <div class="section-label">Usage</div>
+          <div class="usage-row">
+            <span class="label">Cheatsheets created</span>
+            <span class="count" id="usage-count">0</span>
+          </div>
+          <div class="progress">
+            <div class="progress-fill" id="usage-bar" style="width:0%"></div>
+          </div>
+          <p style="font-size:11px;color:#BBB;margin-top:6px;" id="usage-note">3 free cheatsheets included</p>
+        </div>
+
+        <div class="section">
+          <div class="btn-stack">
+            <button class="btn btn-orange" id="btn-upgrade" style="display:none">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Upgrade to Pro — $10/month
+            </button>
+            <button class="btn btn-outline" id="btn-verify" style="display:none">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Already paid? Verify subscription
+            </button>
+            <button class="btn btn-danger" id="btn-signout">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Not signed in -->
+    <div id="not-signed-in" style="display:none">
+      <div class="card">
+        <div class="not-signed-in">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h2>Create your account</h2>
+          <p>Sign in to sync your cheatsheets and unlock unlimited generation with a Pro subscription.</p>
+          <div class="btn-stack">
+            <button class="btn btn-orange" id="btn-signin">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Sign In / Create Account
+            </button>
+          </div>
+        </div>
+
+        <div class="section" id="free-usage-section">
+          <div class="section-label">Free Usage</div>
+          <div class="usage-row">
+            <span class="label">Cheatsheets created</span>
+            <span class="count" id="free-count">0</span>
+          </div>
+          <div class="progress">
+            <div class="progress-fill" id="free-bar" style="width:0%"></div>
+          </div>
+          <p style="font-size:11px;color:#BBB;margin-top:6px;">3 free cheatsheets without an account</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="firebase-config.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

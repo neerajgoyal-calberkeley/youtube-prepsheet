@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Cheatsheet — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1A1A1A;
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 560px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #BF5700, #D46500);
+      color: #fff;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header svg {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .card-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .card-header p {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+
+    .card-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .label-sub {
+      font-weight: 400;
+      color: #888;
+      font-size: 12px;
+    }
+
+    input[type="password"],
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1A1A1A;
+      background: #fafafa;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #BF5700;
+      background: #fff;
+    }
+
+    .api-key-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .api-key-row input {
+      flex: 1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary { background: #BF5700; color: #fff; }
+    .btn-primary:hover { background: #A24A00; }
+    .btn-outline { background: #fff; color: #555; border: 1.5px solid #E0E0E0; }
+    .btn-outline:hover { background: #F5F5F5; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .status.success { background: #e8f5e9; color: #2e7d32; }
+    .status.error   { background: #fdecea; color: #c62828; }
+    .status.info    { background: #e3f2fd; color: #1565c0; }
+
+    .help-link {
+      font-size: 12px;
+      color: #1a237e;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .help-link:hover { text-decoration: underline; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .info-box {
+      background: #FFF5EC;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      color: #A24A00;
+      line-height: 1.6;
+    }
+
+    .info-box strong { display: block; margin-bottom: 4px; }
+
+    .privacy-box {
+      border: 1.5px solid #E8E8E8;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .privacy-toggle {
+      width: 100%;
+      background: #FAFAFA;
+      border: none;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .privacy-toggle:hover { background: #F0F0F0; }
+
+    .privacy-toggle svg {
+      width: 14px;
+      height: 14px;
+      color: #999;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .privacy-toggle.open svg { transform: rotate(180deg); }
+
+    .privacy-body {
+      display: none;
+      padding: 16px;
+      border-top: 1px solid #E8E8E8;
+      font-size: 12px;
+      color: #444;
+      line-height: 1.7;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    .privacy-body.open { display: block; }
+
+    .privacy-body h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1A1A1A;
+      margin: 14px 0 4px;
+    }
+
+    .privacy-body h3:first-child { margin-top: 0; }
+
+    .privacy-body p { margin-bottom: 6px; }
+
+    .privacy-body ul {
+      padding-left: 16px;
+      margin-bottom: 6px;
+    }
+
+    .privacy-body ul li { margin-bottom: 3px; }
+
+    .privacy-body a { color: #BF5700; text-decoration: none; }
+    .privacy-body a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;flex-shrink:0">
+        <line x1="12" y1="1.5" x2="12" y2="3.5"/>
+        <line x1="17" y1="2.8" x2="15.8" y2="4"/>
+        <line x1="20" y1="7.5" x2="18" y2="8.2"/>
+        <line x1="7" y1="2.8" x2="8.2" y2="4"/>
+        <line x1="4" y1="7.5" x2="6" y2="8.2"/>
+        <path d="M9 17C7.9 15.5 7 13.7 7 11.5a5 5 0 0 1 10 0c0 2.2-.9 4-2 5.5"/>
+        <line x1="9" y1="17" x2="15" y2="17"/>
+        <line x1="9.5" y1="19.5" x2="14.5" y2="19.5"/>
+        <line x1="10.5" y1="22" x2="13.5" y2="22"/>
+      </svg>
+      <div>
+        <h1>Settings</h1>
+        <p>YouTube Cheatsheet</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- API Key -->
+      <div class="field">
+        <label for="apiKey">
+          Claude API Key
+          <span class="label-sub">— required to generate cheatsheets</span>
+        </label>
+        <div class="api-key-row">
+          <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
+          <button class="btn btn-outline" id="toggleKeyBtn" title="Show / hide key">Show</button>
+        </div>
+        <a class="help-link" href="https://console.anthropic.com/account/keys" target="_blank">
+          ↗ Get your API key from Anthropic Console
+        </a>
+      </div>
+
+      <!-- Model -->
+      <div class="field">
+        <label for="model">
+          Claude Model
+          <span class="label-sub">— used for cheatsheet generation</span>
+        </label>
+        <select id="model">
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (Recommended — smart &amp; fast)</option>
+          <option value="claude-opus-4-7">Claude Opus 4.7 (Most capable, slower)</option>
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fastest, lower cost)</option>
+        </select>
+      </div>
+
+      <div id="statusMsg" class="status"></div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+        <button class="btn btn-outline" id="testBtn">Test Connection</button>
+      </div>
+
+      <hr class="divider">
+
+      <div class="info-box">
+        <strong>How it works</strong>
+        Your API key is stored locally in your browser and sent directly to Anthropic's
+        Claude API to generate cheatsheets. It is never stored on our servers.
+        Cheatsheet generation costs roughly $0.003–$0.02 per video depending on length
+        and your chosen model.
+      </div>
+
+      <hr class="divider">
+
+      <div class="field">
+        <label>Developer / Testing</label>
+        <div class="actions" style="margin-top:4px">
+          <button class="btn btn-outline" id="resetBtn">Reset cheatsheet count</button>
+          <button class="btn btn-outline" id="devModeBtn">Enable bypass limit</button>
+        </div>
+        <div id="devStatus" class="status"></div>
+        <p style="font-size:12px;color:#999;margin-top:6px;">Reset clears all saved cheatsheets so you can test the free-limit flow again. Bypass limit disables the 3-cheatsheet cap while testing.</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Privacy Policy -->
+      <div class="privacy-box">
+        <button class="privacy-toggle" id="privacyToggle">
+          Privacy Policy
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="privacy-body" id="privacyBody">
+          <p style="color:#888;font-size:11px;margin-bottom:10px;">Last updated: May 2026</p>
+
+          <h3>What we collect</h3>
+          <ul>
+            <li><strong>Claude API Key</strong> — stored locally on your device only. Sent directly to Anthropic's servers when generating a cheatsheet. Never stored on our servers.</li>
+            <li><strong>Video transcript, title &amp; channel name</strong> — sent to Anthropic's Claude API to generate your cheatsheet. Not stored by us beyond what Anthropic retains per their own policy.</li>
+            <li><strong>Cheatsheets</strong> — stored locally on your device using Chrome's storage. Never uploaded to our servers.</li>
+            <li><strong>Email address &amp; user ID</strong> — collected only if you create an account, stored in Google Firebase solely to verify your subscription status.</li>
+          </ul>
+
+          <h3>What we don't collect</h3>
+          <ul>
+            <li>We do not collect your browsing history</li>
+            <li>We do not track which YouTube videos you watch beyond the one you're actively cheatsheet-ing</li>
+            <li>We do not sell or share your data with advertisers or data brokers</li>
+            <li>We do not store payment information — all payments are handled by Stripe</li>
+          </ul>
+
+          <h3>Third-party services</h3>
+          <ul>
+            <li><strong>Anthropic</strong> — receives your video transcript to generate cheatsheets. See <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a>.</li>
+            <li><strong>Google Firebase</strong> — used for account authentication and subscription verification. See <a href="https://policies.google.com/privacy" target="_blank">Google's privacy policy</a>.</li>
+            <li><strong>Stripe</strong> — handles subscription payments. We never see your card details. See <a href="https://stripe.com/privacy" target="_blank">stripe.com/privacy</a>.</li>
+          </ul>
+
+          <h3>Data deletion</h3>
+          <p>Delete cheatsheets anytime from the extension popup. To delete your account and associated data, email us at the address below.</p>
+
+          <h3>Contact</h3>
+          <p>Questions or requests: <a href="mailto:youtubecheatsheet@gmail.com">youtubecheatsheet@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
