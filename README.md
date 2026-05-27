@@ -244,6 +244,38 @@ Full privacy policy in the extension's Settings page.
 
 ---
 
+## Pre-Launch Checklist
+
+Before publishing to the Chrome Web Store or taking real payments:
+
+### Payments & Business
+- [ ] Add business bank account to Stripe (Dashboard → Settings → Bank accounts & scheduling)
+- [ ] Complete Stripe identity verification (required to receive payouts)
+- [ ] Test end-to-end payment flow with a real card in Stripe test mode
+- [ ] Switch Stripe from test mode to live mode and update `STRIPE_SECRET_KEY` in Vercel
+- [ ] Confirm webhook is receiving live events (Stripe → Developers → Webhooks → recent deliveries)
+
+### Security & Identity
+- [ ] No secrets in the public repo — verify with `git log --all -p | grep -i "AIza\|sk_\|whsec_"` 
+- [ ] Firebase API key restricted to only required APIs in [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials
+- [ ] OAuth consent screen uses a business/public email, not a personal one
+- [ ] Firestore security rules set to deny all writes from the client (only webhook can write)
+- [ ] Stripe webhook signature verification enabled (already in `stripe-webhook/api/webhook.js`)
+- [ ] Review all `console.log` statements in production code — none should log user data or tokens
+
+### Privacy & Legal
+- [ ] Privacy policy hosted at a public URL and linked in Chrome Web Store listing
+- [ ] Contact email in privacy policy is a business address, not personal
+- [ ] `firebase-config.js` is in `.gitignore` and not tracked — verify with `git ls-files firebase-config.js` (should return nothing)
+
+### Chrome Web Store
+- [ ] Screenshots at 1280×800 (at least one required)
+- [ ] Extension ZIP built from clean directory (excludes `.claude/`, `node_modules`, `*.pdf`, `*.zip`)
+- [ ] Store listing description written
+- [ ] $5 one-time developer fee paid
+
+---
+
 ## License
 
 MIT
