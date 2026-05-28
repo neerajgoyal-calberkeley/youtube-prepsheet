@@ -390,7 +390,7 @@
       <div class="yt-cs-header">
         <div class="yt-cs-brand">
           <div class="yt-cs-brand-icon">${BRAND_ICON_SVG}</div>
-          <span class="yt-cs-brand-name">Cheatsheet</span>
+          <span class="yt-cs-brand-name">YouTube Summarizer</span>
         </div>
         <div class="yt-cs-header-right">
           <button class="yt-cs-close-btn" id="yt-cs-close-btn" title="Close">
