@@ -1,12 +1,13 @@
 {
   "name": "yt-cheatsheet-webhook",
   "version": "1.0.0",
-  "description": "Stripe webhook for YouTube Summarizer subscription management",
+  "description": "Stripe webhook + AI proxy for YouTube Summarizer",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "firebase-admin": "^12.0.0",
     "stripe": "^14.0.0"
   }

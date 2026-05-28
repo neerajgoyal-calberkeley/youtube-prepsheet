@@ -306,6 +306,14 @@
       };
 
       port.onMessage.addListener((msg) => {
+        if (msg.type === 'limit_reached') {
+          if (flushTimer) { clearTimeout(flushTimer); flushTimer = null; }
+          chrome.runtime.sendMessage({ action: 'openTab', url: chrome.runtime.getURL('upgrade.html') });
+          port.disconnect();
+          resolve();
+          return;
+        }
+
         if (msg.type === 'chunk') {
           htmlBuffer += msg.chunk;
 

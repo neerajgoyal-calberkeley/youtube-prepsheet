@@ -1,78 +1,54 @@
 'use strict';
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const DEFAULT_MODEL = 'claude-sonnet-4-6';
-const CLASSIFICATION_MODEL = 'claude-haiku-4-5-20251001';
+const PROXY_BASE_URL = 'https://stripe-webhook-khaki.vercel.app';
+const FIREBASE_API_KEY = 'AIzaSyAb0rVo_WN2F9PIlCUSWwTGalj9Nc6Wvz4';
 
-// Threshold: videos >= 20 minutes use the long-video prompt
-const LONG_VIDEO_THRESHOLD_SECONDS = 1200;
+// ─── Anonymous Firebase Auth (REST — works in service workers) ────────────
 
-// ─── Prompts ───────────────────────────────────────────────────────────────
-
-const LONG_VIDEO_SYSTEM = `You are an assistant that generates cheatsheets from the provided transcript text. Use the plain text extracted from the transcript text to create a 1-3 page cheatsheet for students in HTML format without any markdown, ready for direct rendering on the UI.
-
-Instructions:
-1. Main Concept: Create a section with the heading 'Main Concept' (id: 'concept-heading') and an explanation (id: 'concept-body'). Provide a concise explanation of the main concept in 100-300 words, using 2-3 paragraphs.
-2. Applicability: In a section titled 'Applicability', explain in 2-3 sentences how the concept applies in real life or a person's career.
-3. Key Terms, Formulas, and Theorems: Create a section with this title. Briefly explain and give all relevant formulas — it is a must to include their mathematical representations using Unicode symbols (∫, Σ, √, ², ³, π, θ, α, β, γ, Δ, etc.). Highlight and explain all definitions, and state and explain all theorems that fall under this topic. Use a bulleted list.
-4. How to Apply: In this section, explain in a few bulleted steps how a student can apply these definitions, formulas, and theorems to a question. Focus on educational content only.
-5. Example Question and Solution: Provide an example question (different from the input but applying the same high-level concept) in a section called 'Example Question' and solve it step-by-step in a section called 'Solution'.
-6. Additional Information: In a final section called 'Additional Information', pull in relevant information from the video not included above. This should be 6-15 bullets.
-7. Formatting: After each section, including the last one, add a horizontal line (<hr>) for UI rendering.
-
-Content Guidelines: Do not include any objectionable content including pornographic, violent, hateful, harassing, illegal, defamatory, or privacy-violating content.
-
-Output Format: Generate the output as HTML code only. Do not include any markdown or plain text. Do not wrap in a full HTML document — output only the body content. Use a <style> block at the top for any custom styles.`;
-
-const SHORT_VIDEO_SYSTEM = `You are an assistant that generates cheatsheets from the provided transcript text. Use the plain text extracted from the transcript text to create a 1-2 page cheatsheet for students in HTML format without any markdown, ready for direct rendering on the UI.
-
-Instructions:
-1. Main Concept: Create a section with the heading 'Main Concept' (id: 'concept-heading') and an explanation (id: 'concept-body'). Provide a concise explanation of the main concept in 75-150 words, using 1-2 paragraphs.
-2. Applicability: In a section titled 'Applicability', explain in 2-3 sentences how the concept applies in real life or a person's career.
-3. Key Terms, Formulas, and Theorems: Create a section with this title. Briefly explain and give all relevant formulas — it is a must to include their mathematical representations using Unicode symbols (∫, Σ, √, ², ³, π, θ, α, β, γ, Δ, etc.). Highlight and explain all definitions, and state and explain all theorems. Use a bulleted list.
-4. How to Apply: In this section, explain in a few bulleted steps how a student can apply these definitions, formulas, and theorems to a question. Focus on educational content only.
-5. Example Question and Solution: Provide an example question (different from the input but applying the same high-level concept) in a section called 'Example Question' and solve it step-by-step in a section called 'Solution'.
-6. Formatting: After each section, including the last one, add a horizontal line (<hr>) for UI rendering.
-
-Content Guidelines: Do not include any objectionable content including pornographic, violent, hateful, harassing, illegal, defamatory, or privacy-violating content.
-
-Output Format: Generate the output as HTML code only. Do not include any markdown or plain text. Do not wrap in a full HTML document — output only the body content. Use a <style> block at the top for any custom styles.`;
-
-const GENERAL_SYSTEM = `You are an assistant that generates cheatsheets from the provided transcript text. Use the plain text extracted from the transcript text to create a 1-page general cheatsheet for students in HTML format without any markdown, ready for direct rendering on the UI.
-
-Instructions:
-1. Main Concept: Create a section with the heading 'Main Concept' (id: 'concept-heading') and an explanation (id: 'concept-body'). Provide a concise explanation of the main concept in 75-150 words.
-2. Key Terms: Create a section titled 'Key Terms'. List and define the most important terms in a bulleted list.
-3. Formulas and Theorems: Create a section titled 'Formulas and Theorems'. Include any formulas or theorems with their mathematical representations using Unicode symbols. If none apply, state "No specific formulas or theorems apply to this topic."
-4. Other Relevant Information: Create a section titled 'Other Relevant Information'. Include 4-8 bulleted points covering important additional content from the video not addressed above.
-5. Formatting: After each section, including the last one, add a horizontal line (<hr>) for UI rendering.
-
-Content Guidelines: Do not include any objectionable content.
-
-Output Format: Generate the output as HTML code only. Do not include any markdown or plain text. Do not wrap in a full HTML document — output only the body content. Use a <style> block at the top for any custom styles.`;
-
-// ─── Helpers ───────────────────────────────────────────────────────────────
-
-// ─── Firebase config helper ────────────────────────────────────────────────
-
-async function getFirebaseConfig() {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['firebaseConfig'], (r) => resolve(r.firebaseConfig || null));
-  });
+async function getIdToken() {
+  const { authState } = await chrome.storage.local.get('authState');
+  if (authState?.idToken && Date.now() < authState.expiresAt - 300000) {
+    return authState.idToken;
+  }
+  if (authState?.refreshToken) {
+    return await refreshIdToken(authState.refreshToken, authState);
+  }
+  return await signInAnonymously();
 }
 
-// ─── Firestore subscription check ─────────────────────────────────────────
+async function signInAnonymously() {
+  const res = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnSecureToken: true }) }
+  );
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  const authState = {
+    uid: data.localId,
+    idToken: data.idToken,
+    refreshToken: data.refreshToken,
+    expiresAt: Date.now() + parseInt(data.expiresIn, 10) * 1000,
+    isAnonymous: true,
+  };
+  await chrome.storage.local.set({ authState });
+  return authState.idToken;
+}
 
-async function checkFirestoreSubscription(userId) {
-  const cfg = await getFirebaseConfig();
-  if (!cfg?.projectId) return false;
-  try {
-    const url = `https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/(default)/documents/subscriptions/${userId}`;
-    const res = await fetch(url);
-    if (!res.ok) return false;
-    const data = await res.json();
-    return data.fields?.status?.stringValue === 'active';
-  } catch (_) { return false; }
+async function refreshIdToken(refreshToken, existing = {}) {
+  const res = await fetch(
+    `https://securetoken.googleapis.com/v1/token?key=${FIREBASE_API_KEY}`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ grant_type: 'refresh_token', refresh_token: refreshToken }) }
+  );
+  const data = await res.json();
+  if (data.error) return await signInAnonymously();
+  const authState = {
+    ...existing,
+    idToken: data.id_token,
+    refreshToken: data.refresh_token,
+    expiresAt: Date.now() + parseInt(data.expires_in, 10) * 1000,
+  };
+  await chrome.storage.local.set({ authState });
+  return authState.idToken;
 }
 
 // ─── Shareable HTML page builder ──────────────────────────────────────────
@@ -130,46 +106,6 @@ async function getAuth() {
   });
 }
 
-async function getSettings() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(['apiKey', 'model'], (result) => {
-      resolve({
-        apiKey: result.apiKey || '',
-        model: result.model || DEFAULT_MODEL,
-      });
-    });
-  });
-}
-
-async function callClaude({ apiKey, model, system, userContent, maxTokens }) {
-  const body = {
-    model,
-    max_tokens: maxTokens,
-    messages: [{ role: 'user', content: userContent }],
-  };
-  if (system) body.system = system;
-
-  const response = await fetch(ANTHROPIC_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const msg = errData.error?.message || `API error ${response.status}`;
-    throw new Error(msg);
-  }
-
-  const data = await response.json();
-  return data.content[0].text;
-}
-
 // ─── Classification cache (session-scoped) ─────────────────────────────────
 
 async function getCached(videoId) {
@@ -190,80 +126,19 @@ async function handleClassify({ videoId, title, channel }) {
   const cached = await getCached(videoId);
   if (cached !== null) return { isSTEMB: cached };
 
-  const { apiKey } = await getSettings();
-  if (!apiKey) return { isSTEMB: null, error: 'no_api_key' };
-
   try {
-    const userContent = `Is this YouTube video about a STEMB topic — Science, Technology, Engineering, Mathematics, or Business/Finance/Economics?
-
-Title: "${title}"
-Channel: "${channel}"
-
-Reply with only the single word YES or NO.`;
-
-    const result = await callClaude({
-      apiKey,
-      model: CLASSIFICATION_MODEL,
-      system: null,
-      userContent,
-      maxTokens: 5,
+    const idToken = await getIdToken();
+    const res = await fetch(`${PROXY_BASE_URL}/api/classify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+      body: JSON.stringify({ title, channel }),
     });
-
-    const isSTEMB = result.trim().toUpperCase().startsWith('YES');
+    const data = await res.json();
+    const isSTEMB = data.isSTEMB ?? true;
     setCache(videoId, isSTEMB);
     return { isSTEMB };
   } catch (err) {
-    console.error('[YT Cheatsheet] Classification error:', err.message);
-    // Default to true so students don't miss a useful cheatsheet
     return { isSTEMB: true, error: err.message };
-  }
-}
-
-async function handleGenerateCheatsheet({ transcript, durationSeconds, isSTEMB, title }) {
-  const { apiKey, model } = await getSettings();
-  if (!apiKey) {
-    return { error: 'No API key found. Please open the extension settings and enter your Claude API key.' };
-  }
-
-  let system;
-  if (!isSTEMB) {
-    system = GENERAL_SYSTEM;
-  } else if (durationSeconds >= LONG_VIDEO_THRESHOLD_SECONDS) {
-    system = LONG_VIDEO_SYSTEM;
-  } else {
-    system = SHORT_VIDEO_SYSTEM;
-  }
-
-  // Cap transcript at ~100k characters to stay well within context limits
-  const MAX_CHARS = 100000;
-  const trimmedTranscript = transcript.length > MAX_CHARS
-    ? transcript.slice(0, MAX_CHARS) + '\n\n[Transcript truncated due to length]'
-    : transcript;
-
-  const userContent = `Video Title: "${title}"\n\nTranscript:\n${trimmedTranscript}`;
-
-  try {
-    let html = await callClaude({ apiKey, model, system, userContent, maxTokens: 4096 });
-    // Strip any <style> blocks — our injected CSS owns all styling so colours stay consistent
-    html = html.replace(/<style[\s\S]*?<\/style>/gi, '').trim();
-    return { html };
-  } catch (err) {
-    return { error: err.message };
-  }
-}
-
-async function handleTestApiKey({ apiKey }) {
-  try {
-    await callClaude({
-      apiKey,
-      model: CLASSIFICATION_MODEL,
-      system: null,
-      userContent: 'Say "OK" and nothing else.',
-      maxTokens: 5,
-    });
-    return { success: true };
-  } catch (err) {
-    return { success: false, error: err.message };
   }
 }
 
@@ -433,58 +308,39 @@ chrome.runtime.onConnect.addListener((port) => {
   if (port.name !== 'generate') return;
 
   port.onMessage.addListener(async ({ transcript, durationSeconds, isSTEMB, title }) => {
-    const { apiKey, model } = await getSettings();
-    if (!apiKey) {
-      port.postMessage({ type: 'error', error: 'No API key found. Open Settings and add your Claude API key.' });
+    let idToken;
+    try {
+      idToken = await getIdToken();
+    } catch (err) {
+      port.postMessage({ type: 'error', error: 'Authentication failed: ' + err.message });
       return;
     }
 
-    let system;
-    if (!isSTEMB) {
-      system = GENERAL_SYSTEM;
-    } else if (durationSeconds >= LONG_VIDEO_THRESHOLD_SECONDS) {
-      system = LONG_VIDEO_SYSTEM;
-    } else {
-      system = SHORT_VIDEO_SYSTEM;
-    }
-
-    const MAX_CHARS = 100000;
-    const trimmedTranscript = transcript.length > MAX_CHARS
-      ? transcript.slice(0, MAX_CHARS) + '\n\n[Transcript truncated due to length]'
-      : transcript;
-
     let response;
     try {
-      response = await fetch(ANTHROPIC_API_URL, {
+      response = await fetch(`${PROXY_BASE_URL}/api/generate`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model,
-          max_tokens: 4096,
-          stream: true,
-          system,
-          messages: [{ role: 'user', content: `Video Title: "${title}"\n\nTranscript:\n${trimmedTranscript}` }],
-        }),
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+        body: JSON.stringify({ transcript, durationSeconds, isSTEMB, title }),
       });
     } catch (err) {
-      port.postMessage({ type: 'error', error: err.message });
+      port.postMessage({ type: 'error', error: 'Could not reach server: ' + err.message });
+      return;
+    }
+
+    if (response.status === 403) {
+      port.postMessage({ type: 'limit_reached' });
       return;
     }
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      port.postMessage({ type: 'error', error: errData.error?.message || `API error ${response.status}` });
+      port.postMessage({ type: 'error', error: errData.error || `Server error ${response.status}` });
       return;
     }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let accumulated = '';
     let sseBuffer = '';
 
     try {
@@ -494,28 +350,19 @@ chrome.runtime.onConnect.addListener((port) => {
 
         sseBuffer += decoder.decode(value, { stream: true });
         const lines = sseBuffer.split('\n');
-        sseBuffer = lines.pop(); // hold incomplete last line
+        sseBuffer = lines.pop();
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
-          const raw = line.slice(6).trim();
-          if (raw === '[DONE]') continue;
           try {
-            const ev = JSON.parse(raw);
-            if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
-              accumulated += ev.delta.text;
-              port.postMessage({ type: 'chunk', chunk: ev.delta.text });
-            }
+            const msg = JSON.parse(line.slice(6));
+            port.postMessage(msg);
           } catch (_) {}
         }
       }
     } catch (err) {
       port.postMessage({ type: 'error', error: 'Stream interrupted: ' + err.message });
-      return;
     }
-
-    const html = accumulated.replace(/<style[\s\S]*?<\/style>/gi, '').trim();
-    port.postMessage({ type: 'done', html });
   });
 });
 
@@ -529,41 +376,15 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (action === 'generateCheatsheet') {
-    handleGenerateCheatsheet(message).then(sendResponse).catch((err) => sendResponse({ error: err.message }));
-    return true;
-  }
-
-  if (action === 'testApiKey') {
-    handleTestApiKey(message).then(sendResponse).catch((err) => sendResponse({ success: false, error: err.message }));
-    return true;
-  }
-
   if (action === 'checkLimit') {
     (async () => {
-      const [list, auth, devData] = await Promise.all([
+      const [list, devData] = await Promise.all([
         new Promise((r) => chrome.storage.local.get(['cheatsheets'], (d) => r(d.cheatsheets || []))),
-        getAuth(),
         new Promise((r) => chrome.storage.sync.get(['devMode'], r)),
       ]);
-      const count = list.length;
-
-      // Developer bypass — skip all limit/subscription checks while testing
-      if (devData.devMode) {
-        sendResponse({ allowed: true, count, subscribed: true, devMode: true });
-        return;
-      }
-
-      let subscribed = auth.subscribed || false;
-
-      // If not cached as subscribed, re-check Firestore in case payment just went through
-      if (!subscribed && auth.userId) {
-        subscribed = await checkFirestoreSubscription(auth.userId);
-        if (subscribed) chrome.storage.sync.set({ subscribed: true });
-      }
-
-      const allowed = subscribed || count < 3;
-      sendResponse({ allowed, count, subscribed });
+      if (devData.devMode) { sendResponse({ allowed: true, count: list.length, devMode: true }); return; }
+      // Proxy enforces the real limit — allow client-side for UX pre-check only
+      sendResponse({ allowed: true, count: list.length });
     })();
     return true;
   }

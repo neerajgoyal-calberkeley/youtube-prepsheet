@@ -267,49 +267,10 @@
     </div>
 
     <div class="card-body">
-      <!-- API Key -->
-      <div class="field">
-        <label for="apiKey">
-          Claude API Key
-          <span class="label-sub">— required to generate cheatsheets</span>
-        </label>
-        <div class="api-key-row">
-          <input type="password" id="apiKey" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
-          <button class="btn btn-outline" id="toggleKeyBtn" title="Show / hide key">Show</button>
-        </div>
-        <a class="help-link" href="https://console.anthropic.com/account/keys" target="_blank">
-          ↗ Get your API key from Anthropic Console
-        </a>
-      </div>
-
-      <!-- Model -->
-      <div class="field">
-        <label for="model">
-          Claude Model
-          <span class="label-sub">— used for cheatsheet generation</span>
-        </label>
-        <select id="model">
-          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (Recommended — smart &amp; fast)</option>
-          <option value="claude-opus-4-7">Claude Opus 4.7 (Most capable, slower)</option>
-          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fastest, lower cost)</option>
-        </select>
-      </div>
-
-      <div id="statusMsg" class="status"></div>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="saveBtn">Save Settings</button>
-        <button class="btn btn-outline" id="testBtn">Test Connection</button>
-      </div>
-
-      <hr class="divider">
-
       <div class="info-box">
         <strong>How it works</strong>
-        Your API key is stored locally in your browser and sent directly to Anthropic's
-        Claude API to generate cheatsheets. It is never stored on our servers.
-        Cheatsheet generation costs roughly $0.003–$0.02 per video depending on length
-        and your chosen model.
+        YouTube Summarizer uses Claude AI to generate your cheatsheets. Everything is handled
+        automatically — no API keys or setup required. Just install and go.
       </div>
 
       <hr class="divider">
