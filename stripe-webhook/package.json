@@ -1,7 +1,7 @@
 {
   "name": "yt-cheatsheet-webhook",
   "version": "1.0.0",
-  "description": "Stripe webhook for YouTube Cheatsheet subscription management",
+  "description": "Stripe webhook for YouTube Summarizer subscription management",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

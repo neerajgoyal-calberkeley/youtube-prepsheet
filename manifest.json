@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Cheatsheet",
+  "name": "Youtube Summarizer - Cheatsheet for STEMB videos",
   "version": "1.0.0",
-  "description": "Instantly generate 1-page study cheatsheets from STEMB YouTube videos using Claude AI.",
+  "description": "Instantly generate 1-page study cheatsheets from any YouTube video using Claude AI. Perfect for STEMB (Science, Tech, Engineering, Math, Business) learners.",
   "permissions": [
     "storage",
     "scripting",
